@@ -4,9 +4,9 @@ namespace pozdravliator
 {
     internal class Birthday
     {
-        static ushort counter = 0;
+        static int counter = 0;
 
-        private ushort id;
+        private int id;
         private DateTime date;
         private string person;
 
@@ -19,7 +19,7 @@ namespace pozdravliator
 
         public DateTime Date { get { return date; } }
         public string Person { get { return person; } }
-        public ushort Id { get { return id; } }
+        public int Id { get { return id; } }
 
         public void Edit(DateTime? date = null, string? person = null)
         {
