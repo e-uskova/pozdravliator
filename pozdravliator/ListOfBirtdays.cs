@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace pozdravliator
 {
-    internal class ListOfBirtdays
+    internal class ListOfBirtdays: IEnumerable<Birthday>
     {
         private List<Birthday> bdays = new List<Birthday>();
         public int Count { 
@@ -30,6 +31,18 @@ namespace pozdravliator
             }
         }
 
+        public IEnumerator<Birthday> GetEnumerator()
+        {
+            return bdays.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ListOfBirtdays() { }
+
         public ListOfBirtdays(List<Birthday> bdays)
         {
             this.bdays = bdays;
@@ -49,8 +62,9 @@ namespace pozdravliator
 
         public void Delete(int id)
         {
-            Console.WriteLine("--- Deleting ---\n");
+            Console.Write("--- Deleting ---\n");
             ShowBDay(id);
+            Console.WriteLine();
 
             List<Birthday> bdays_new = new();
             foreach (Birthday bday in bdays)
@@ -78,19 +92,19 @@ namespace pozdravliator
             if (bday == null)
                 Console.WriteLine("No such record");
             else
-                Console.WriteLine($" {bday.Id,-5} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
+                Console.WriteLine($" {bday.Id,3} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
         }
 
         public void ShowBDay(Birthday bday)
         {
-            Console.WriteLine($" {bday.Id,-5} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
+            Console.WriteLine($" {bday.Id,3} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
         }
 
         public void ShowAllBDays()
         {
             Console.WriteLine("--- All Birthdays ---\n");
-            Console.WriteLine(" ID    | Date     | Person\n" +
-                              "------------------------------");
+            Console.WriteLine("  ID | Date     | Person\n" +
+                              "----------------------------");
             foreach (var b in bdays)
                 ShowBDay(b);
             Console.WriteLine();
@@ -101,8 +115,8 @@ namespace pozdravliator
             DateTime today = DateTime.Today;
 
             Console.WriteLine("--- Today Birthdays ---\n");
-            Console.WriteLine(" ID    | Date     | Person\n" +
-                              "------------------------------");
+            Console.WriteLine("  ID | Date     | Person\n" +
+                              "----------------------------");
             foreach (var b in bdays)
             {
                 DateTime thisYearDate = new(today.Year, b.Date.Month, b.Date.Day);
@@ -118,8 +132,8 @@ namespace pozdravliator
             DateTime today = DateTime.Today;
 
             Console.WriteLine("--- Nearest Birthdays ---\n");
-            Console.WriteLine(" ID    | Date     | Person\n" +
-                              "------------------------------");
+            Console.WriteLine("  ID | Date     | Person\n" +
+                              "----------------------------");
 
             /*ushort counter = 0;*/
             foreach (var b in bdays)
@@ -139,5 +153,6 @@ namespace pozdravliator
             }
             Console.WriteLine();
         }
+
     }
 }

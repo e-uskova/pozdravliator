@@ -1,5 +1,9 @@
-﻿using System;
+﻿using CsvHelper;
+using System;
+using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.Globalization;
+using System.Text;
 
 
 /*
@@ -21,7 +25,9 @@ namespace pozdravliator
     {
         static void Main(string[] args)
         {
-            List<Birthday> bdays = new()
+            string filename = "Birthdays.txt";
+
+            /*ListOfBirtdays bdays_list = new()
             {
                 new Birthday(new DateTime(2000, 5, 2), "Kate"),
                 new Birthday(new DateTime(1998, 7, 17), "Lana"),
@@ -33,7 +39,9 @@ namespace pozdravliator
                 new Birthday(DateTime.Today.AddYears(-5), "Today 5 year ago")
             };
 
-            ListOfBirtdays bdays_list = new(bdays);
+            FileIO.WriteTxt(bdays_list, filename);*/
+
+            ListOfBirtdays bdays_list = FileIO.ReadTxt(filename);
 
             string[] formatsOfDate = { "dd/MM/yyyy" /*, "d/MM/yyyy", "dd/M/yyyy", "d/M/yyyy", "dd/MM/yy", "d/MM/yy", "dd/M/yy", "d/M/yy"*/ };
 
@@ -118,6 +126,9 @@ namespace pozdravliator
 
                 Console.Clear();
             }
+
+            if (Dialogs.YesNoQuestion("Save changes?"))
+                FileIO.WriteTxt(bdays_list, filename);
         }
 
     }

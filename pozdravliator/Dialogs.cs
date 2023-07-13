@@ -109,5 +109,16 @@ namespace pozdravliator
 
             return id;
         }
+
+        static public bool YesNoQuestion(string text)
+        {
+            Dictionary<byte, string> commands = new()
+            {
+                {0, "no" },
+                {1, "yes"}
+            };
+
+            return (InputCommand(commands, text) == 1);
+        }
     }
 }
