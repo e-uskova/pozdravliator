@@ -43,8 +43,6 @@ namespace pozdravliator
 
             ListOfBirtdays bdays_list = FileIO.ReadTxt(filename);
 
-            string[] formatsOfDate = { "dd/MM/yyyy" /*, "d/MM/yyyy", "dd/M/yyyy", "d/M/yyyy", "dd/MM/yy", "d/MM/yy", "dd/M/yy", "d/M/yy"*/ };
-
             Dictionary<byte, string> commands_dict = new()
             {
                 { 0, "exit" },
@@ -62,7 +60,6 @@ namespace pozdravliator
 
             while (command != 0)
             {
-
                 switch (command)
                 {
                     case 1:
@@ -75,51 +72,16 @@ namespace pozdravliator
                         bdays_list.ShowNearestBDays();
                         break;
                     case 4:
-                        {
-                            DateTime date = Dialogs.InputDate(formatsOfDate);
-                            string person = Dialogs.InputPerson();
-
-                            bdays_list.Add(date, person);
-                            break;
-                        }
-                    case 5:
-                        {
-                            int id = Dialogs.InputId();
-
-                            bdays_list.Delete(id);
-                            break;
-                        }                        
-                    case 6:
-                        {
-                            int id = Dialogs.InputId();
-
-                            Dictionary<byte, string> cmd_dict = new() 
-                            {
-                                { 0, "date" }, 
-                                { 1, "name" } 
-                            };
-
-                            byte cmd = Dialogs.InputCommand(cmd_dict, "Choose field:");
-
-                            switch (cmd)
-                            {
-                                case 0:
-                                    DateTime newDate = Dialogs.InputDate(formatsOfDate);
-                                    bdays_list.Edit(id, date:  newDate);
-                                    break;
-                                case 1:
-                                    string newPerson = Dialogs.InputPerson();
-                                    bdays_list.Edit(id, person: newPerson);
-                                    break;
-                                default:
-                                    break;
-                            }
-                            
-                            break;                  
-                        }
-                    default:
+                        bdays_list = Dialogs.AddBday(bdays_list);
                         break;
-                
+                    case 5:
+                        bdays_list = Dialogs.DeleteBday(bdays_list);
+                        break;
+                    case 6:
+                        bdays_list = Dialogs.EditBday(bdays_list);
+                        break;
+                    default:
+                        break;                
                 }
 
                 command = Dialogs.InputCommand(commands_dict);

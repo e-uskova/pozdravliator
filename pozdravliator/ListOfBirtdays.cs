@@ -10,6 +10,7 @@ namespace pozdravliator
     internal class ListOfBirtdays: IEnumerable<Birthday>
     {
         private List<Birthday> bdays = new List<Birthday>();
+
         public int Count { 
             get
             {
@@ -20,10 +21,14 @@ namespace pozdravliator
             } 
         }
 
-        public Birthday? this[int index]
+        public Birthday? this[int index_]
         {
             get
             {
+                int index = index_;
+                if (index < 0 && -index < bdays.Count)
+                    index = bdays.Count - index;
+
                 foreach (Birthday bday in bdays)
                     if (bday.Id == index)
                         return bday;
@@ -55,17 +60,11 @@ namespace pozdravliator
 
         public void Add(DateTime date, string person)
         {
-            Console.WriteLine("--- Adding ---\n");
-
             bdays.Add(new Birthday(date, person));
         }
 
         public void Delete(int id)
         {
-            Console.Write("--- Deleting ---\n");
-            ShowBDay(id);
-            Console.WriteLine();
-
             List<Birthday> bdays_new = new();
             foreach (Birthday bday in bdays)
             {
@@ -74,11 +73,9 @@ namespace pozdravliator
             }
             bdays = bdays_new;
         }
+
         public void Edit(int id, DateTime? date = null, string? person = null)
         {
-            Console.WriteLine("--- Editing ---\n");
-            ShowBDay(id);
-
             Birthday? bday = this[id];
             if (bday == null)
                 Console.WriteLine("No such record");
@@ -86,18 +83,27 @@ namespace pozdravliator
                 bday.Edit(date, person);
         }
 
-        public void ShowBDay(int id)
+        /*public void ShowBDay(int id)
         {
             Birthday? bday = this[id];
             if (bday == null)
                 Console.WriteLine("No such record");
             else
                 Console.WriteLine($" {bday.Id,3} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
+        }*/
+
+        public void ShowBDay(Birthday? bday)
+        {
+            if (bday != null)
+                Console.WriteLine($" {bday.Id,3} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
         }
 
-        public void ShowBDay(Birthday bday)
+        static public void ShowBDay(int? id, DateTime date, string person)
         {
-            Console.WriteLine($" {bday.Id,3} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
+            if (id == null)
+                Console.WriteLine($"     | {date,-8:dd/MM/yy} | {person}");
+            else
+                Console.WriteLine($" {id,3} | {date,-8:dd/MM/yy} | {person}");
         }
 
         public void ShowAllBDays()

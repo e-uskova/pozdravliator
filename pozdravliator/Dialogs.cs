@@ -10,6 +10,8 @@ namespace pozdravliator
 {
     internal static class Dialogs
     {
+        static readonly string[] formatsOfDate = { "dd/MM/yyyy" /*, "d/MM/yyyy", "dd/M/yyyy", "d/M/yyyy", "dd/MM/yy", "d/MM/yy", "dd/M/yy", "d/M/yy"*/ };
+
         static public byte InputCommand(Dictionary<byte, string> commands, string title = "Available commands:")
         {
             Console.WriteLine(title);
@@ -86,7 +88,7 @@ namespace pozdravliator
             return person;
         }
 
-        static public int InputId(/*ListOfBirtdays bdays*/)
+        static public int InputId()
         {
             int id;
             string? input;
@@ -119,6 +121,115 @@ namespace pozdravliator
             };
 
             return (InputCommand(commands, text) == 1);
+        }
+
+        static public ListOfBirtdays AddBday(ListOfBirtdays bdays)
+        {
+            Console.WriteLine("--- Adding ---\n");
+
+            ListOfBirtdays bdays_new = bdays;
+
+            DateTime date = Dialogs.InputDate(formatsOfDate);
+            string person = Dialogs.InputPerson();
+
+            Console.WriteLine("\nNext bday will be added:");
+            ListOfBirtdays.ShowBDay(null, date, person);
+            Console.WriteLine();
+
+            if (YesNoQuestion("Continue?"))
+                bdays_new.Add(date, person);
+            else
+                Console.WriteLine("Canceled");
+            Console.WriteLine();
+
+            return bdays_new;
+        }
+
+        static public ListOfBirtdays DeleteBday(ListOfBirtdays bdays)
+        {
+            Console.WriteLine("--- Deleting ---\n");
+
+            ListOfBirtdays bdays_new = bdays;
+
+            int id = Dialogs.InputId();
+
+            if (bdays[id] != null)
+            {
+                Console.WriteLine("Next bday will be deleted:");
+                bdays.ShowBDay(bdays[id]);
+                Console.WriteLine();
+
+                if (YesNoQuestion("Continue?"))
+                    bdays_new.Delete(id);
+                else
+                    Console.WriteLine("Canceled");
+                Console.WriteLine();
+            }
+            else
+            {
+                Console.WriteLine("No such bday.\n");
+            }
+               
+            return bdays_new;
+
+        }
+
+        static public ListOfBirtdays EditBday(ListOfBirtdays bdays)
+        {
+            Console.WriteLine("--- Editing ---\n");
+
+            ListOfBirtdays bdays_new = bdays;
+
+            int id = Dialogs.InputId();            
+
+            if (bdays[id] != null)
+            {
+                Console.WriteLine("Next bday will be edited:");
+                bdays.ShowBDay(bdays[id]);
+                Console.WriteLine();
+
+                Dictionary<byte, string> cmd_dict = new()
+                {
+                    { 0, "date" },
+                    { 1, "name" }
+                };
+
+                byte cmd = Dialogs.InputCommand(cmd_dict, "Choose field:");
+
+                DateTime? newDate = null;
+                string? newPerson = null;
+             
+                
+                switch (cmd)
+                {
+                    case 0:
+                        newDate = Dialogs.InputDate(formatsOfDate);
+                        Console.WriteLine("\nNext changes will be added:");
+                        ListOfBirtdays.ShowBDay(id, (DateTime)newDate, bdays[id].Person);
+                        break;
+                    case 1:
+                        newPerson = Dialogs.InputPerson();
+                        Console.WriteLine("\nNext changes will be added:");
+                        ListOfBirtdays.ShowBDay(id, bdays[id].Date, newPerson);
+                        break;
+                    default:
+                        break;
+                }
+
+                Console.WriteLine();
+
+                if (YesNoQuestion("Continue?"))
+                    bdays_new.Edit(id, newDate, newPerson);
+                else
+                    Console.WriteLine("Canceled");
+                Console.WriteLine();                
+            }
+            else
+            {
+                Console.WriteLine("No such bday.\n");
+            }
+
+            return bdays_new;
         }
     }
 }
