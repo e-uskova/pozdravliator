@@ -1,10 +1,10 @@
-﻿using System;
+﻿
 
 namespace pozdravliator
 {
     internal class Birthday
     {
-        static int counter = 0;
+        static private int counter = 0;
 
         private int id;
         private DateTime date;
@@ -29,9 +29,9 @@ namespace pozdravliator
             this.person = person;
         }
 
-        public DateTime Date { get { return date; } set { } }
-        public string Person { get { return person; } set { } }
-        public int Id { get { return id; } set { } }
+        public DateTime Date { get { return date; } }
+        public string Person { get { return person; } }
+        public int Id { get { return id; } }
 
         public void Edit(DateTime? date = null, string? person = null)
         {

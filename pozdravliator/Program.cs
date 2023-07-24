@@ -1,10 +1,4 @@
-﻿using CsvHelper;
-using System;
-using System.Collections.Generic;
-using System.Formats.Asn1;
-using System.Globalization;
-using System.Text;
-
+﻿
 
 /*
  * Приложение "Поздравлятор". Функциональность приложения - ведение списка дней
@@ -56,20 +50,20 @@ namespace pozdravliator
 
             Console.WriteLine("*** Welcome to Pozdravliator! ***\n");
 
-            byte command = 1;
+            byte? command = 1;
 
             while (command != 0)
             {
                 switch (command)
                 {
                     case 1:
-                        bdays_list.ShowAllBDays();
+                        Dialogs.ShowAllBDays(bdays_list);
                         break;
                     case 2:
-                        bdays_list.ShowTodayBDays();
+                        Dialogs.ShowTodayBDays(bdays_list);
                         break;
                     case 3:
-                        bdays_list.ShowNearestBDays();
+                        Dialogs.ShowNearestBDays(bdays_list);
                         break;
                     case 4:
                         bdays_list = Dialogs.AddBday(bdays_list);
@@ -80,13 +74,14 @@ namespace pozdravliator
                     case 6:
                         bdays_list = Dialogs.EditBday(bdays_list);
                         break;
-                    default:
-                        break;                
                 }
 
                 command = Dialogs.InputCommand(commands_dict);
 
-                Console.Clear();
+                if (command == 1 || command == 2 || command == 3)
+                    Console.Clear();
+                else 
+                    Console.WriteLine();
             }
 
             if (Dialogs.YesNoQuestion("Save changes?"))
