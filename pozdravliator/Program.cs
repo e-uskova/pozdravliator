@@ -1,4 +1,4 @@
-﻿
+﻿using System.IO;
 
 /*
  * Приложение "Поздравлятор". Функциональность приложения - ведение списка дней
@@ -17,11 +17,18 @@ namespace pozdravliator
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args) 
         {
-            string filename = "Birthdays.txt";
+            string filename = "Scientists.txt"; /*"Birthdays.txt";*/
+            string workingDirectory = Environment.CurrentDirectory;
+            string projectDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+            var path = Path.Combine(projectDirectory, filename);
 
-            /*ListOfBirtdays bdays_list = new()
+            var json = File.ReadAllText(path);
+            List<Birthday> bdays = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Birthday>>(json) ?? new();
+            ListOfBirthdays bdays_list = new(bdays);
+
+            /*ListOfBirthdays bdays_list = new()
             {
                 new Birthday(new DateTime(2000, 5, 2), "Kate"),
                 new Birthday(new DateTime(1998, 7, 17), "Lana"),
@@ -30,25 +37,26 @@ namespace pozdravliator
                 new Birthday(new DateTime(2022, 9, 6), "Shkiper"),
                 new Birthday(new DateTime(2023, 7, 4), "This code"),
                 new Birthday(DateTime.Today, "Today"),
-                new Birthday(DateTime.Today.AddYears(-5), "Today 5 year ago")
+                new Birthday(DateTime.Today.AddYears(-5), "Today 5 years ago")
             };
-
-            FileIO.WriteTxt(bdays_list, filename);*/
-
-            ListOfBirtdays bdays_list = FileIO.ReadTxt(filename);
+            
+            var jsonOut = Newtonsoft.Json.JsonConvert.SerializeObject(bdays_list);
+            File.WriteAllText(path, jsonOut);*/
 
             Dictionary<byte, string> commands_dict = new()
             {
-                { 0, "exit" },
-                { 1, "show all bdays" },
-                { 2, "today bdays" },
-                { 3, "nearest bdays" },
-                { 4, "add bday" },
-                { 5, "delete bday" },
-                { 6, "edit bday" }
+                { 0, "выход" },
+                { 1, "показать все дни рождения" },
+                { 10, "сортировать по ID" },
+                { 11, "сортировать по дате" },
+                { 12, "сортировать по имени" },
+                { 2, "показать ближайшие дни рождения" },
+                { 3, "добавить запись" },
+                { 4, "удалить запись" },
+                { 5, "изменить запись" }
             };
 
-            Console.WriteLine("*** Welcome to Pozdravliator! ***\n");
+            Console.WriteLine("*** ПОЗДРАВЛЯТОР ***\n");
 
             byte? command = 1;
 
@@ -59,33 +67,43 @@ namespace pozdravliator
                     case 1:
                         Dialogs.ShowAllBDays(bdays_list);
                         break;
-                    case 2:
-                        Dialogs.ShowTodayBDays(bdays_list);
+                    case 10:
+                        Dialogs.ShowAllBDays(bdays_list.SortedById());
                         break;
-                    case 3:
+                    case 11:
+                        Dialogs.ShowAllBDays(bdays_list.SortedByDate());
+                        break;
+                    case 12:
+                        Dialogs.ShowAllBDays(bdays_list.SortedByPerson());
+                        break;
+                    case 2:
                         Dialogs.ShowNearestBDays(bdays_list);
                         break;
-                    case 4:
+                    case 3:
                         bdays_list = Dialogs.AddBday(bdays_list);
                         break;
-                    case 5:
+                    case 4:
                         bdays_list = Dialogs.DeleteBday(bdays_list);
                         break;
-                    case 6:
+                    case 5:
                         bdays_list = Dialogs.EditBday(bdays_list);
                         break;
+                    default: break;
                 }
 
                 command = Dialogs.InputCommand(commands_dict);
 
-                if (command == 1 || command == 2 || command == 3)
+                if (command != 3 && command != 4 && command != 5 && command != 0)
                     Console.Clear();
                 else 
                     Console.WriteLine();
             }
 
-            if (Dialogs.YesNoQuestion("Save changes?"))
-                FileIO.WriteTxt(bdays_list, filename);
+            if (Dialogs.YesNoQuestion("Сохранить изменения?"))
+            {
+                var jsonOut = Newtonsoft.Json.JsonConvert.SerializeObject(bdays_list);
+                File.WriteAllText(path, jsonOut);
+            }
         }
 
     }

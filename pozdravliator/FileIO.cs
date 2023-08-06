@@ -4,7 +4,7 @@ namespace pozdravliator
 {
     static internal class FileIO
     {
-        static public void WriteTxt(ListOfBirtdays bdays, string filename = "bdays.txt")
+        static public void WriteTxt(ListOfBirthdays bdays, string filename = "bdays.txt")
         {
             try
             {
@@ -22,9 +22,9 @@ namespace pozdravliator
             }
         }
 
-        static public ListOfBirtdays ReadTxt(string filename = "bdays.txt")
+        static public ListOfBirthdays ReadTxt(string filename = "bdays.txt")
         {
-            ListOfBirtdays bdays = new();
+            ListOfBirthdays bdays = new();
 
             string? line;
             try

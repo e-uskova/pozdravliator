@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33801.468
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pozdravliator", "pozdravliator\pozdravliator.csproj", "{4C2B6940-52E8-41B3-8CD4-1F340726AE20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pozdravliator", "pozdravliator\pozdravliator.csproj", "{4C2B6940-52E8-41B3-8CD4-1F340726AE20}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{94D24C66-F2A9-4317-9069-3812C877B11E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

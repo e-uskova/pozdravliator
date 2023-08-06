@@ -4,9 +4,9 @@ namespace pozdravliator
 {
     internal static class Dialogs
     {
-        static readonly string[] formatsOfDate = { "dd/MM/yyyy" /*, "d/MM/yyyy", "dd/M/yyyy", "d/M/yyyy", "dd/MM/yy", "d/MM/yy", "dd/M/yy", "d/M/yy"*/ };
+        static readonly string[] formatsOfDate = { "dd/MM/yyyy", "d/MM/yyyy", "dd/M/yyyy", "d/M/yyyy", "dd/MM/yy", "d/MM/yy", "dd/M/yy", "d/M/yy" };
 
-        static public byte? InputCommand(Dictionary<byte, string> commands, string title = "Available commands:", bool nullAvailable = false)
+        static public byte? InputCommand(Dictionary<byte, string> commands, string title = "Доступные команды:", bool nullAvailable = false)
         {
             /*Console.WriteLine("----------------------------");*/
             Console.WriteLine(title);
@@ -14,9 +14,9 @@ namespace pozdravliator
             foreach (byte key in commands.Keys)
                 Console.WriteLine($" {key} - {commands[key]}");
             if (nullAvailable)
-                Console.WriteLine("You can use empty input to interrupt operation.");
+                Console.WriteLine("- Для прерывания операции используйте пустой ввод. -");
             /*Console.WriteLine("----------------------------");*/
-            Console.Write("\nInput the command: ");
+            Console.Write("\nВведите команду: ");
 
             byte cmd;
 
@@ -35,11 +35,11 @@ namespace pozdravliator
                         if (commands.ContainsKey(cmd))
                             return cmd;
                         else
-                            Console.Write("Unknown command \"{0}\". Try again: ", input);
+                            Console.Write("Неизвестная команда \"{0}\". Повторите попытку: ", input);
                     }
                     catch
                     {
-                        Console.Write("Wrong format. Try again: ");
+                        Console.Write("Некорректный формат. Повторите попытку: ");
                     }
                 }
             } while (true);            
@@ -49,8 +49,8 @@ namespace pozdravliator
         {
             string? input;
 
-            Console.WriteLine("You can use empty input to interrupt operation.");
-            Console.Write("Input date in format dd.MM.yyyy: ");
+            Console.WriteLine("- Для прерывания операции используйте пустой ввод. -");
+            Console.Write("Введите дату в формате день.месяц.год: ");
             do
             {
                 input = Console.ReadLine();
@@ -59,7 +59,7 @@ namespace pozdravliator
                 else if (DateTime.TryParseExact(input, formats, new CultureInfo("ru-RU"), DateTimeStyles.None, out DateTime date))
                     return date;
                 else
-                    Console.Write("Wrong format. Try again: ");
+                    Console.Write("Некорректный формат. Повторите попытку: ");
             } while (true);
         }
 
@@ -67,8 +67,8 @@ namespace pozdravliator
         {
             string? input;
 
-            Console.WriteLine("You can use empty input to interrupt operation.");
-            Console.Write("Input name of person: ");
+            Console.WriteLine("- Для прерывания операции используйте пустой ввод. -");
+            Console.Write("Введите имя: ");
             do
             {
                 input = Console.ReadLine();
@@ -84,8 +84,8 @@ namespace pozdravliator
             int id;
             string? input;
 
-            Console.WriteLine("You can use empty input to interrupt operation."); 
-            Console.Write("Input id of bday: ");
+            Console.WriteLine("- Для прерывания операции используйте пустой ввод. -"); 
+            Console.Write("Введите ID записи: ");
             do
             {
                 input = Console.ReadLine();
@@ -99,7 +99,7 @@ namespace pozdravliator
                 }
                 catch
                 {
-                    Console.Write("Wrong format. Try again: ");
+                    Console.Write("Некорректный формат. Повторите попытку: ");
                 }
             } while (true);
 
@@ -110,8 +110,8 @@ namespace pozdravliator
         {
             Dictionary<byte, string> commands = new()
             {
-                {0, "no" },
-                {1, "yes"}
+                {0, "нет" },
+                {1, "да"}
             };
 
             return (InputCommand(commands, text) == 1);
@@ -120,15 +120,15 @@ namespace pozdravliator
         static public void ShowBDay(Birthday? bday)
         {
             if (bday != null)
-                Console.WriteLine($" {bday.Id,3} | {bday.Date,-8:dd/MM/yy} | {bday.Person}");
+                Console.WriteLine($" {bday.Id,3} | {bday.Date,-11:dd MMMM} | {bday.Person}");
         }
 
         static public void ShowBDay(int? id, DateTime date, string person)
         {
             if (id == null)
-                Console.WriteLine($"     | {date,-8:dd/MM/yy} | {person}");
+                Console.WriteLine($"     | {date,-11:dd MMMM} | {person}");
             else
-                Console.WriteLine($" {id,3} | {date,-8:dd/MM/yy} | {person}");
+                Console.WriteLine($" {id,3} | {date,-11:dd MMMM} | {person}");
         }
 
         static private string SectionTitle(string title)
@@ -136,24 +136,24 @@ namespace pozdravliator
             return $"--- {title} ---\n";
         }
 
-        static private string tableHeader = "  ID | Date     | Person\n" +
-                                            "----------------------------";
+        static private string tableHeader = "  ID | Дата        | Имя\n" +
+                                            "-------------------------------------------------------";
 
-        static public void ShowAllBDays(ListOfBirtdays bdays)
+        static public void ShowAllBDays(ListOfBirthdays bdays)
         {
-            Console.WriteLine(SectionTitle("All Birthdays"));
+            Console.WriteLine(SectionTitle("Все дни рождения"));
             Console.WriteLine(tableHeader);
 
             foreach (var b in bdays)
                 ShowBDay(b);
-            Console.WriteLine();
+            Console.WriteLine();            
         }
 
-        static public void ShowTodayBDays(ListOfBirtdays bdays)
+        static public void ShowTodayBDays(ListOfBirthdays bdays)
         {
             DateTime today = DateTime.Today;
 
-            Console.WriteLine(SectionTitle("Today Birthdays"));
+            Console.WriteLine(SectionTitle("Сегодняшние дни рождения"));
             Console.WriteLine(tableHeader);
 
             foreach (var b in bdays)
@@ -166,37 +166,29 @@ namespace pozdravliator
             Console.WriteLine();
         }
 
-        static public void ShowNearestBDays(ListOfBirtdays bdays, ushort period = 90)
+        static public void ShowNearestBDays(ListOfBirthdays bdays, int nearest = 7, int period = 90)
         {
-            DateTime today = DateTime.Today;
-
-            Console.WriteLine(SectionTitle("Nearest Birthdays"));
+            Console.WriteLine(SectionTitle("Ближайшие дни рождения"));
             Console.WriteLine(tableHeader);
 
-            /*ushort counter = 0;*/
-            foreach (var b in bdays)
-            {
-                DateTime thisYearDate = new(today.Year, b.Date.Month, b.Date.Day);
-                DateTime nextDate;
-                if ((thisYearDate - today).TotalDays < 0)
-                    nextDate = new(today.Year + 1, b.Date.Month, b.Date.Day);
-                else
-                    nextDate = thisYearDate;
+            ListOfBirthdays bdays_tmp = bdays.SortedByDateFromToday();
 
-                if (thisYearDate == today || (nextDate - today).TotalDays < period)
+            int nearest_counter = 0;
+            foreach (var b in bdays_tmp)
+                if (nearest_counter < nearest)
                 {
                     ShowBDay(b);
-                    /*counter++;*/
-                }
-            }
+                    nearest_counter++;
+                }            
+            
             Console.WriteLine();
         }
 
-        static public ListOfBirtdays AddBday(ListOfBirtdays bdays)
+        static public ListOfBirthdays AddBday(ListOfBirthdays bdays)
         {
-            Console.WriteLine(SectionTitle("Adding"));
+            Console.WriteLine(SectionTitle("Добавление записи"));
 
-            ListOfBirtdays bdays_new = bdays;
+            ListOfBirthdays bdays_new = bdays;
 
             DateTime? date = InputDate(formatsOfDate);
             if (date != null)
@@ -204,66 +196,58 @@ namespace pozdravliator
                 string? person = InputPerson();
                 if (person != null) 
                 {
-                    Console.WriteLine("\nNext bday will be added:");
+                    Console.WriteLine("\nБудет добавлена запись:");
                     ShowBDay(null, (DateTime)date, person);
                     Console.WriteLine();
 
-                    if (YesNoQuestion("Continue?"))
+                    if (YesNoQuestion("Продолжить?"))
                         bdays_new.Add((DateTime)date, person);
                     else
-                        Console.WriteLine("Canceled");
+                        Console.WriteLine("Отменено");
                 }
                 else
-                {
-                    Console.WriteLine("Interrupted");
-                }
+                    Console.WriteLine("Прервано");
             }
             else
-            {
-                Console.WriteLine("Interrupted");
-            }
+                Console.WriteLine("Прервано");
             Console.WriteLine();
             return bdays_new;
         }
 
-        static public ListOfBirtdays DeleteBday(ListOfBirtdays bdays)
+        static public ListOfBirthdays DeleteBday(ListOfBirthdays bdays)
         {
-            Console.WriteLine(SectionTitle("Deleting"));
+            Console.WriteLine(SectionTitle("Удаление записи"));
 
-            ListOfBirtdays bdays_new = bdays;
+            ListOfBirthdays bdays_new = bdays;
 
             int? id = InputId();
             if (id != null)
             {
                 if (bdays[(int)id] != null)
                 {
-                    Console.WriteLine("Next bday will be deleted:");
+                    Console.WriteLine("Будет удалена запись:");
                     ShowBDay(bdays[(int)id]);
                     Console.WriteLine();
 
-                    if (YesNoQuestion("Continue?"))
+                    if (YesNoQuestion("Продолжить?"))
                         bdays_new.Delete((int)id);
                     else
-                        Console.WriteLine("Canceled");
+                        Console.WriteLine("Отменено");
                 }
                 else
-                {
-                    Console.WriteLine("No such bday.");
-                }
+                    Console.WriteLine("Запись не найдена.");
             }
             else
-            {
-                Console.WriteLine("Interrupted");
-            }
+                Console.WriteLine("Прервано");
             Console.WriteLine();            
             return bdays_new;
         }
 
-        static public ListOfBirtdays EditBday(ListOfBirtdays bdays)
+        static public ListOfBirthdays EditBday(ListOfBirthdays bdays)
         {
-            Console.WriteLine(SectionTitle("Editing"));
+            Console.WriteLine(SectionTitle("Изменение записи"));
 
-            ListOfBirtdays bdays_new = bdays;
+            ListOfBirthdays bdays_new = bdays;
 
             int? id = InputId();
             if (id != null)
@@ -271,17 +255,17 @@ namespace pozdravliator
                 Birthday? bday = bdays[(int)id];
                 if (bday != null) 
                 {
-                    Console.WriteLine("Next bday will be edited:");
+                    Console.WriteLine("Будет изменена запись:");
                     ShowBDay(bday);
                     Console.WriteLine();
 
                     Dictionary<byte, string> cmd_dict = new()
                     {
-                        { 0, "date" },
-                        { 1, "name" }
+                        { 0, "дата" },
+                        { 1, "имя" }
                     };
 
-                    byte? cmd = InputCommand(cmd_dict, "Choose field:", true);
+                    byte? cmd = InputCommand(cmd_dict, "Какое поле изменить?", true);
                     if (cmd != null)
                     {
                         DateTime? newDate = null;
@@ -293,52 +277,39 @@ namespace pozdravliator
                                 newDate = InputDate(formatsOfDate);
                                 if (newDate != null)
                                 {
-                                    Console.WriteLine("\nNext changes will be added:");
+                                    Console.WriteLine("\nЗапись будет изменена на:");
                                     ShowBDay(id, (DateTime)newDate, bday.Person);
                                 }
                                 else
-                                {
-                                    Console.WriteLine("Interrupted");
-                                }
+                                    Console.WriteLine("Прервано");
                                 break;
                             case 1:
                                 newPerson = InputPerson();
                                 if (newPerson != null)
                                 {
-                                    Console.WriteLine("\nNext changes will be added:");
+                                    Console.WriteLine("\nЗапись будет изменена на:");
                                     ShowBDay(id, bday.Date, newPerson);
                                 }
                                 else
-                                {
-                                    Console.WriteLine("Interrupted");
-                                }
+                                    Console.WriteLine("Прервано");
                                 break;
                         }
 
                         Console.WriteLine();
 
-                        if (YesNoQuestion("Continue?"))
-                        {
+                        if (YesNoQuestion("Продолжить?"))
                             bdays_new.Edit((int)id, newDate, newPerson);
-                            Console.WriteLine("Edited");
-                        }
                         else
-                            Console.WriteLine("Canceled");
+                            Console.WriteLine("Отменено");
                     }
                     else
-                    {
-                        Console.WriteLine("Interrupted");
-                    }              
+                        Console.WriteLine("Прервано");
                 }
                 else
-                {
-                    Console.WriteLine("No such bday.");
-                }
+                    Console.WriteLine("Запись не найдена.");
             }
             else
-            {
-                Console.WriteLine("Interrupted");
-            }
+                Console.WriteLine("Прервано");
             Console.WriteLine();  
             return bdays_new;
         }
