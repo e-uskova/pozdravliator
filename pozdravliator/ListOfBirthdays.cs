@@ -41,8 +41,6 @@ namespace pozdravliator
             return bdays.GetEnumerator();
         }
 
-        /*public ListOfBirthdays() { }*/
-
         public ListOfBirthdays(List<Birthday> bdays)
         {
             this.bdays = bdays;

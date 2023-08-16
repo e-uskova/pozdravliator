@@ -75,8 +75,6 @@ namespace pozdravliator
         private DateTime date;
         private string person;
 
-        /*public Birthday() { }*/
-
         public Birthday(int? id, DateTime date, string person)
         {
             if (id == null)
@@ -93,13 +91,6 @@ namespace pozdravliator
             this.date = date;
             this.person = person;
         }
-
-        /*public Birthday(DateTime date, string person)
-        {
-            id = counter++;
-            this.date = date;
-            this.person = person;
-        }*/
 
         public DateTime Date { get { return date; } set { } }
         public string Person { get { return person; } set { } }

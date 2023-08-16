@@ -8,14 +8,12 @@ namespace pozdravliator
 
         static public byte? InputCommand(Dictionary<byte, string> commands, string title = "Доступные команды:", bool nullAvailable = false)
         {
-            /*Console.WriteLine("----------------------------");*/
             Console.WriteLine(title);
 
             foreach (byte key in commands.Keys)
                 Console.WriteLine($" {key} - {commands[key]}");
             if (nullAvailable)
                 Console.WriteLine("- Для прерывания операции используйте пустой ввод. -");
-            /*Console.WriteLine("----------------------------");*/
             Console.Write("\nВведите команду: ");
 
             byte cmd;
